@@ -32,7 +32,7 @@ let imgBox = document.querySelector(".img-box");
 
 let canvas = document.getElementById("canvas");
 
-let ctxt = canvas.getContext('2d');
+let ctxt = canvas.getContext("2d");
 
 window.onload = function () {
   download.style.display = "none";
@@ -65,9 +65,9 @@ upload.onchange = function () {
 
     // note: drawImage(img, x,y , width , height)
     ctxt.drawImage(img, 0, 0, canvas.width, canvas.height);
-    
+
     img.style.display = "none";
-    // hide img as canvas appeared and not need to it 
+    // hide img as canvas appeared and not need to it
   };
 };
 
@@ -77,6 +77,11 @@ let filters = document.querySelectorAll("ul li input");
 
 filters.forEach((filter) => {
   filter.addEventListener("input", function () {
+    // hide img when updates after reset and view canvas
+
+    img.style.display = "none";
+    canvas.style.display = "block";
+
     ctxt.filter = `
         saturate(${saturat.value}%)
         contrast(${contrast.value}%)
@@ -86,8 +91,8 @@ filters.forEach((filter) => {
         blur(${blur.value}px)
         hue-rotate(${hue_rotate.value}deg)
         `;
-        // draw new img with filter
-        ctxt.drawImage(img, 0, 0, canvas.width, canvas.height);
+    // draw new img with filter
+    ctxt.drawImage(img, 0, 0, canvas.width, canvas.height);
   });
 });
 
@@ -103,16 +108,27 @@ function resetValue() {
   grayscale.value = "0";
   blur.value = "0";
   hue_rotate.value = "0";
+
+  // clear the canvas and redraw the original image
+  ctxt.clearRect(0, 0, canvas.width, canvas.height);
+  ctxt.drawImage(img, 0, 0, canvas.width, canvas.height);
 }
 
 // adding reset function to reset btn
 
 reset.addEventListener("click", resetValue);
 
+reset.addEventListener("click", resetimg);
+
+function resetimg() {
+  // hide canvas when click on reset btn and view img
+  img.style.display = "block";
+  canvas.style.display = "none";
+}
 // downloading img with download btn
 
 download.addEventListener("click", downloadImg);
 
 function downloadImg() {
-  download.href=canvas.toDataURL()
+  download.href = canvas.toDataURL();
 }
